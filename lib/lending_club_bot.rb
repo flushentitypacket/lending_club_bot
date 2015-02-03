@@ -1,25 +1,23 @@
 require 'lending_club'
-require 'yaml'
-require 'filter'
+require 'configuration'
 
 class LendingClubBot
 
+  attr_reader :configuration
+
+  def initialize
+    @configuration = Configuration.new
+  end
+
+  def configure
+    yield configuration
+  end
+
   def start
-    load_credentials
     loans = LendingClub.loans
-    filtered_loans = loans.reject { |loan| Filter.filter?(loan) }
-    # purchases = order_loans(filtered_loans)
+    loans_to_buy = configuration.strategy.call(loans)
+    # purchases = order_loans(loans_to_buy)
     # notify(purchases)
   end
-
-  private
-
-  def load_credentials
-    YAML.load(File.read('config/credentials.yml')).tap do |credentials|
-      LendingClub.access_token = credentials['access_token']
-      LendingClub.investor_id = credentials['investor_id']
-    end
-  end
-
 
 end
