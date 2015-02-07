@@ -4,7 +4,7 @@ require 'lending_club_bot'
 require 'email_notifier'
 
 bot = LendingClubBot.new.configure do |config|
-  email = YAML.load(File.read('config/email.yml'))
+  email = YAML.load_file('config/email.yml')
   config.notifier = EmailNotifier.new(
     email.delete(:from), email.delete(:to), email)
 end

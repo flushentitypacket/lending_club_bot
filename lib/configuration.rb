@@ -30,7 +30,7 @@ class Configuration
   private
 
   def load_credentials
-    YAML.load(File.read(credentials_path)).tap do |credentials|
+    YAML.load_file(credentials_path).tap do |credentials|
       LendingClub.access_token = credentials['access_token']
       LendingClub.investor_id = credentials['investor_id']
     end
