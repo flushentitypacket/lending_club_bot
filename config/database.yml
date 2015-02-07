@@ -1,0 +1,12 @@
+# This is a sample database file for the Sequel ORM
+:development: &defaults
+  :adapter: postgres
+  :database: lending_club_bot_development
+  # :username: the_user
+  # :password: secrets
+  # :host: localhost
+  # :socket: /tmp/mysql.sock
+
+:test:
+  <<: *defaults
+  :database: lending_club_bot_test
