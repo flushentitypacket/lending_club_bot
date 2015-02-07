@@ -26,13 +26,21 @@ class EmailNotifier
   private
 
   def subject_with_date
-    "LendingClubBot results #{Date.today.strftime("%B %d %Y")}"
+    "LendingClubBot results #{Date.today.strftime("%Y/%m/%d")}"
   end
 
   def pretty_loan(loan)
     link = "https://www.lendingclub.com/browse/loanDetail.action?" \
            "loan_id=#{loan.id}"
-    # TODO Pretty loan summary
-    link
+    interest_rate = loan.int_rate
+    credit_rating = loan.fico_range_low
+    dti = loan.dti
+
+    <<-PRETTY_LOAN
+      #{link}
+      interest rate: #{interest_rate}
+      credit rating: #{credit_rating}
+      dti: #{dti}
+    PRETTY_LOAN
   end
 end
