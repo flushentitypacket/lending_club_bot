@@ -15,6 +15,8 @@ mkmf.log
 
 # Ignore stored credentials
 config/credentials.yml
+# Ignore stored email addresses
+config/email.yml
 
 # Ignore rvm settings
 .ruby-gemset

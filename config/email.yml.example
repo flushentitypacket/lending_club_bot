@@ -1,0 +1,6 @@
+:from: 'from'
+:to: 'emailaddress@destination.net'
+:address: smtp.address.here
+:port: 587
+:user_name: username
+:password: password

@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 require 'lending_club_bot'
+require 'email_notifier'
 
-LendingClubBot.new.start
+bot = LendingClubBot.new.configure do |config|
+  email = YAML.load(File.read('config/email.yml'))
+  config.notifier = EmailNotifier.new(
+    email.delete(:from), email.delete(:to), email)
+end
+
+bot.run

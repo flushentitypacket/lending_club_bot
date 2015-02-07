@@ -3,16 +3,20 @@ require 'strategy'
 require 'yaml'
 
 class Configuration
+  DEFAULT_CREDENTIALS_PATH = 'config/credentials.yml'
+  attr_accessor :credentials_path
+
   DEFAULT_STRATEGY = Strategy.new
   attr_accessor :strategy
 
-  DEFAULT_CREDENTIALS_PATH = 'config/credentials.yml'
-  attr_accessor :credentials_path
+  DEFAULT_NOTIFIER = nil
+  attr_accessor :notifier
 
   def initialize
     @credentials_path = DEFAULT_CREDENTIALS_PATH
     load_credentials
     @strategy = DEFAULT_STRATEGY
+    @notifier = DEFAULT_NOTIFIER
   end
 
   def access_token=(token)

@@ -11,13 +11,16 @@ class LendingClubBot
 
   def configure
     yield configuration
+    self
   end
 
-  def start
+  def run
     loans = LendingClub.loans
     loans_to_buy = configuration.strategy.call(loans)
-    # purchases = order_loans(loans_to_buy)
-    # notify(purchases)
+    # purchases = order_loans!(loans_to_buy)
+    purchases = loans_to_buy
+    configuration.notifier.notify(purchases) if configuration.notifier
+    nil
   end
 
 end
