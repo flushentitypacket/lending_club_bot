@@ -5,6 +5,6 @@ class PurchasedNote < Sequel::Model
 
   def validate
     super
-    validates_presence :loan_id
+    validates_presence [:purchased_at, :loan_id]
   end
 end
