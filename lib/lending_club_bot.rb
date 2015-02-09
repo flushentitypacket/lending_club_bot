@@ -30,4 +30,18 @@ class LendingClubBot
     nil
   end
 
+  private
+
+  # TODO(flush): This has somewhat restricted functionality since it only
+  # buys a single share of the loan with no option to change.
+  # Should make that configurable.
+  def order_loans!(loans)
+    orders = loans.map do |loan|
+      single_share_amount = 25.0
+      LendingClub::Order.new(loan.id, 1 * single_share_amount)
+    end
+    LendingClub.order(orders)
+    loans
+  end
+
 end
