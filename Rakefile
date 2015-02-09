@@ -32,7 +32,7 @@ namespace :db do
 
   desc "Perform migration up to latest migration available"
   task :migrate do
-    Sequel::Migrator.run(DB, "migrations")
+    Sequel::Migrator.run(DB, "lib/migrations")
     Rake::Task['db:version'].execute
   end
 
@@ -40,14 +40,14 @@ namespace :db do
   task :rollback, :target do |t, args|
     args.with_defaults(:target => 0)
 
-    Sequel::Migrator.run(DB, "migrations", :target => args[:target].to_i)
+    Sequel::Migrator.run(DB, "lib/migrations", :target => args[:target].to_i)
     Rake::Task['db:version'].execute
   end
 
   desc "Perform migration reset (full rollback and migration)"
   task :reset do
-    Sequel::Migrator.run(DB, "migrations", :target => 0)
-    Sequel::Migrator.run(DB, "migrations")
+    Sequel::Migrator.run(DB, "lib/migrations", :target => 0)
+    Sequel::Migrator.run(DB, "lib/migrations")
     Rake::Task['db:version'].execute
   end
 end
