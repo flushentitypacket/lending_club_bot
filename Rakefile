@@ -1,4 +1,15 @@
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), 'lib')))
+
+desc 'Starts a pry REPL with some files preloaded'
+task :console do
+  require 'lending_club'
+  require 'lending_club_bot'
+  require 'pry'
+  LendingClubBot.require_models
+  ARGV.clear
+  Pry.start
+end
 
 namespace :db do
   require "sequel"
@@ -21,7 +32,7 @@ namespace :db do
 
   desc "Perform migration up to latest migration available"
   task :migrate do
-    Sequel::Migrator.run(DB, "lib/migrations")
+    Sequel::Migrator.run(DB, "migrations")
     Rake::Task['db:version'].execute
   end
 
@@ -35,8 +46,8 @@ namespace :db do
 
   desc "Perform migration reset (full rollback and migration)"
   task :reset do
-    Sequel::Migrator.run(DB, "lib/migrations", :target => 0)
-    Sequel::Migrator.run(DB, "lib/migrations")
+    Sequel::Migrator.run(DB, "migrations", :target => 0)
+    Sequel::Migrator.run(DB, "migrations")
     Rake::Task['db:version'].execute
   end
 end
