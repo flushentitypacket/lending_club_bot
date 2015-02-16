@@ -7,4 +7,6 @@ gem 'sequel'
 
 group :development, :test do
   gem 'pry-byebug'
+  gem 'minitest'
+  gem 'minitest-reporters'
 end

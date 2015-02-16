@@ -12,15 +12,21 @@ task :console do
   Pry.start
 end
 
+require 'rake/testtask'
+Rake::TestTask.new do |t|
+  t.libs << 'spec'
+  t.pattern = "spec/**/*_spec.rb"
+end
+
 namespace :db do
   require "sequel"
   Sequel.extension :migration
   env = ENV['LENDING_CLUB_BOT_ENV'] || 'development'
   require 'yaml'
-  db_config = YAML.load_file('config/database.yml')
-  db_config = db_config[env] || db_config[env.to_sym] || db_config
-  db_config.keys.each{|k| db_config[k.to_sym] = db_config.delete(k)}
-  DB = Sequel.connect(db_config)
+  config = YAML.load_file('config/database.yml')[env.to_sym]
+  require 'connection'
+  include Connection
+  DB = connect(config)
 
   desc "Prints current schema version"
   task :version do
