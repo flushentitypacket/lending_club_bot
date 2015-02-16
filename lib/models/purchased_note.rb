@@ -1,3 +1,5 @@
+require 'sequel'
+
 class PurchasedNote < Sequel::Model
   plugin :validation_helpers
 

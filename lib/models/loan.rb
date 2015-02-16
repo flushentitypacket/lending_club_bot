@@ -1,3 +1,4 @@
+require 'sequel'
 require 'json'
 
 class Loan < Sequel::Model
