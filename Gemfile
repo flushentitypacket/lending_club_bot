@@ -9,4 +9,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'minitest'
   gem 'minitest-reporters'
+  gem 'database_cleaner'
+  gem 'factory_girl'
 end
