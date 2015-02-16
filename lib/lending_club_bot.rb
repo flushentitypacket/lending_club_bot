@@ -46,6 +46,7 @@ class LendingClubBot
         loan_model = Loan.where(id: loan.id).first
         unless loan_model
           loan_model = Loan.new
+          loan_model.id = loan.id
           loan_model.json = loan.to_h
           loan_model.save
         end
