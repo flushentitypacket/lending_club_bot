@@ -23,7 +23,6 @@ class LendingClubBot
     loans = LendingClub.loans
     loans_to_buy = configuration.strategy.call(loans)
     purchases = order_loans!(loans_to_buy, dry_run: true)
-    purchases = loans_to_buy
     configuration.notifier.notify(purchases) if configuration.notifier
     nil
   end
