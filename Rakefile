@@ -6,7 +6,8 @@ task :console do
   require 'lending_club'
   require 'lending_club_bot'
   require 'pry'
-  LendingClubBot.require_models
+  include Models
+  require_models
   ARGV.clear
   Pry.start
 end
