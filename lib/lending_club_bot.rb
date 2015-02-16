@@ -12,19 +12,20 @@ class LendingClubBot
     @configuration = Configuration.new
   end
 
-  def configure
-    yield configuration
-    self
-  end
-
   def run
     connect(db_config)
     require_models
     loans = LendingClub.loans
     loans_to_buy = configuration.strategy.call(loans)
-    purchases = order_loans!(loans_to_buy, dry_run: true)
+    purchases = order_loans!(loans_to_buy,
+      dry_run: configuration.dry_run?)
     configuration.notifier.notify(purchases) if configuration.notifier
     nil
+  end
+
+  def configure
+    yield configuration
+    self
   end
 
   def env

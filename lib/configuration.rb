@@ -19,12 +19,19 @@ class Configuration
   DEFAULT_NOTIFIER = nil
   attr_accessor :notifier
 
+  DEFAULT_DRY_RUN = true
+  attr_writer :dry_run
+  def dry_run?
+    !!@dry_run
+  end
+
   def initialize
     @credentials_path = DEFAULT_CREDENTIALS_PATH
     load_credentials
     @database_path = DEFAULT_DATABASE_PATH
     @strategy = DEFAULT_STRATEGY
     @notifier = DEFAULT_NOTIFIER
+    @dry_run = DEFAULT_DRY_RUN
   end
 
   def access_token=(token)

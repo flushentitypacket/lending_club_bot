@@ -3,10 +3,14 @@ $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 require 'lending_club_bot'
 require 'email_notifier'
 
+# TODO(flush): Allow every configurable thing to be set via command line
+# instead of this hard-code only business that's going on here!
+
 bot = LendingClubBot.new.configure do |config|
   email = YAML.load_file('config/email.yml')
   config.notifier = EmailNotifier.new(
     email.delete(:from), email.delete(:to), email)
+  config.dry_run = true
 end
 
 bot.run
