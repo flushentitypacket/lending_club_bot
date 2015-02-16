@@ -4,7 +4,14 @@ require 'yaml'
 
 class Configuration
   DEFAULT_CREDENTIALS_PATH = 'config/credentials.yml'
-  attr_accessor :credentials_path
+  attr_reader :credentials_path
+  def credentials_path=(path)
+    @credentials_path = path
+    load_credentials
+  end
+
+  DEFAULT_DATABASE_PATH = 'config/database.yml'
+  attr_accessor :database_path
 
   DEFAULT_STRATEGY = Strategy.new
   attr_accessor :strategy
@@ -15,6 +22,7 @@ class Configuration
   def initialize
     @credentials_path = DEFAULT_CREDENTIALS_PATH
     load_credentials
+    @database_path = DEFAULT_DATABASE_PATH
     @strategy = DEFAULT_STRATEGY
     @notifier = DEFAULT_NOTIFIER
   end

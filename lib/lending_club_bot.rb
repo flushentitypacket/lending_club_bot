@@ -18,13 +18,22 @@ class LendingClubBot
   end
 
   def run
-    connect
+    connect(db_config)
     require_models
     loans = LendingClub.loans
     loans_to_buy = configuration.strategy.call(loans)
     purchases = order_loans!(loans_to_buy, dry_run: true)
     configuration.notifier.notify(purchases) if configuration.notifier
     nil
+  end
+
+  def env
+    ENV['LENDING_CLUB_BOT_ENV'] || 'development'
+  end
+
+  def db_config
+    require 'yaml'
+    YAML.load_file(configuration.database_path)[env.to_sym]
   end
 
   private
