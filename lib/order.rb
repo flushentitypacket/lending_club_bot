@@ -43,6 +43,7 @@ class Order
   end
 
   def dry_run?
+    return true if @dry_run.nil?
     !!@dry_run
   end
 
