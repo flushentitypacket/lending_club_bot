@@ -7,6 +7,6 @@ class Strategy
 
     loans.
       reject { |loan| Filter.filter?(loan) }.
-      reject { |loan|  purchased_loan_ids.include?(loan.id) }
+      reject { |loan| purchased_loan_ids.include?(loan.id) }
   end
 end
