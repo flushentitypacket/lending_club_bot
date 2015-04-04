@@ -26,9 +26,13 @@ class Order
     @client.execute_orders!(orders)
     successful_loan_ids = orders.reject { |order| order.success? }.map(&:loan_id)
 
-    loans.select do |loan|
+    successful_purchases = loans.select do |loan|
       successful_loan_ids.include?(loan.id)
     end
+
+    successful_purchases.each { |purchase| record_purchase(purchase) }
+
+    successful_purchases
   end
 
   def dry_run?
@@ -38,20 +42,20 @@ class Order
 
   private
 
-  # def record_purchase(loan)
-  #   if Loan.where(id: loan.id).empty?
-  #     Loan.new.tap do |_loan_model|
-  #       _loan_model.id = loan.id
-  #       _loan_model.json = loan.to_h
-  #     end.save
-  #   end
+  def record_purchase(loan)
+    if Loan.where(id: loan.id).empty?
+      Loan.new.tap do |_loan_model|
+        _loan_model.id = loan.id
+        _loan_model.json = loan.to_h
+      end.save
+    end
 
-  #   PurchasedNote.new.tap do |note_model|
-  #     note_model.loan = loan_model
-  #     note_model.purchased_at = Time.now
-  #   end.save
+    PurchasedNote.new.tap do |note_model|
+      note_model.loan_id = loan.id
+      note_model.purchased_at = Time.now
+    end.save
 
-  #   return nil
-  # end
+    return nil
+  end
 
 end
