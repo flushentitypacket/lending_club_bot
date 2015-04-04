@@ -6,9 +6,17 @@ class Api
   def initialize(options = {})
     @dry_run = !!options.fetch(:dry_run, true)
     @client = options.fetch(:client, LendingClub)
+    @credentials = options[:credentials]
+    set_credentials
+  end
+
+  # @return [Array<LendingClub::Loan>]
+  def loans
+    LendingClub.loans
   end
 
   # @param [Array<Order>] WARNING mutates!
+  # @return [Array<Order>]
   def execute_orders!(orders)
     return orders if dry_run?
 
@@ -32,10 +40,15 @@ class Api
     orders
   end
 
+  def build_order(loan_id, amount)
+    Order.new(loan_id, amount)
+  end
+
   def dry_run?
     @dry_run
   end
 
+  # @private
   class Order
     SINGLE_SHARE_AMOUNT = 25
     attr_reader :loan_id, :amount
@@ -48,6 +61,16 @@ class Api
     def success?
       @status == :success
     end
+  end
+
+  private
+
+  def set_credentials
+    if @credentials
+      client.access_token = @credentials['access_token']
+      client.investor_id = @credentials['investor_id']
+    end
+    nil
   end
 
 end

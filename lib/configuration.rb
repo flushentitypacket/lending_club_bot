@@ -9,6 +9,9 @@ class Configuration
     @credentials_path = path
     load_credentials
   end
+  def credentials
+    YAML.load_file(credentials_path)
+  end
 
   DEFAULT_DATABASE_PATH = 'config/database.yml'
   attr_accessor :database_path
@@ -27,28 +30,10 @@ class Configuration
 
   def initialize
     @credentials_path = DEFAULT_CREDENTIALS_PATH
-    load_credentials
     @database_path = DEFAULT_DATABASE_PATH
     @strategy = DEFAULT_STRATEGY
     @notifier = DEFAULT_NOTIFIER
     @dry_run = DEFAULT_DRY_RUN
-  end
-
-  def access_token=(token)
-    LendingClub.access_token = token
-  end
-
-  def investor_id=(id)
-    LendingClub.investor_id = id
-  end
-
-  private
-
-  def load_credentials
-    YAML.load_file(credentials_path).tap do |credentials|
-      LendingClub.access_token = credentials['access_token']
-      LendingClub.investor_id = credentials['investor_id']
-    end
   end
 
 end

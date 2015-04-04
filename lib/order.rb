@@ -1,4 +1,4 @@
-require 'lending_club'
+require 'api'
 require 'models'
 
 class Order
@@ -8,9 +8,8 @@ class Order
   attr_reader :loans
 
   def initialize(loans, options = {})
-    require_models
     @loans = loans
-    @dry_run = options[:dry_run]
+    @client = options[:client] || Api.new(dry_run: options[:dry_run])
   end
 
   # TODO(flush): This has somewhat restricted functionality since it only
@@ -19,32 +18,40 @@ class Order
   def execute!
     orders = loans.map do |loan|
       single_share_amount = BigDecimal.new(25)
-      LendingClub::Order.new(loan.id, single_share_amount)
+      order = @client.build_order(loan.id, single_share_amount)
 
-      PurchasedNote.new.tap do |note_model|
-        # TODO(flush): There must be a cleaner way to do this, but being
-        # a Sequel noob has its disadvantages.
-        loan_model = Loan.where(id: loan.id).first
-        unless loan_model
-          loan_model = Loan.new
-          loan_model.id = loan.id
-          loan_model.json = loan.to_h
-          loan_model.save
-        end
-        note_model.loan = loan_model
-        note_model.purchased_at = Time.now
-      end.save
-
+      order
     end
 
-    LendingClub.order(orders) unless dry_run?
+    @client.execute_orders!(orders)
+    successful_loan_ids = orders.reject { |order| order.success? }.map(&:loan_id)
 
-    loans
+    loans.select do |loan|
+      successful_loan_ids.include?(loan.id)
+    end
   end
 
   def dry_run?
     return true if @dry_run.nil?
     !!@dry_run
   end
+
+  private
+
+  # def record_purchase(loan)
+  #   if Loan.where(id: loan.id).empty?
+  #     Loan.new.tap do |_loan_model|
+  #       _loan_model.id = loan.id
+  #       _loan_model.json = loan.to_h
+  #     end.save
+  #   end
+
+  #   PurchasedNote.new.tap do |note_model|
+  #     note_model.loan = loan_model
+  #     note_model.purchased_at = Time.now
+  #   end.save
+
+  #   return nil
+  # end
 
 end

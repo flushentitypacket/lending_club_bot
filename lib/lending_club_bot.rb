@@ -16,10 +16,10 @@ class LendingClubBot
   def run
     connect(db_config)
     require_models
-    loans = LendingClub.loans
+    api = Api.new(credentials: configuration.credentials, dry_run: configuration.dry_run?)
+    loans = api.loans
     loans_to_buy = configuration.strategy.call(loans)
-    order = Order.new(loans_to_buy, dry_run: configuration.dry_run?)
-    purchases = order.execute!
+    purchases = Order.new(loans_to_buy, dry_run: configuration.dry_run?).execute!
     configuration.notifier.notify(purchases) if configuration.notifier
     nil
   end
